@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from flask import Flask, request
 from google.cloud import pubsub_v1
 
@@ -25,10 +26,12 @@ def process_payload(payload):
     for line in payload.splitlines():
         try:
             data = json.loads(line)
+            data["ts"] = datetime.utcfromtimestamp(data["clock"]).strftime('%Y-%m-%d %H:%M:%S')
             publish_to_pubsub(data)
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {str(e)}")
         except Exception as e:
+            print(f"data: {json.dumps(data).encode('utf-8')}")
             print(f"Error processing payload: {str(e)}")
 
 def publish_to_pubsub(data):

@@ -37,7 +37,7 @@ module "zabbix_server" {
     appliance-name = var.project
     startup-script = <<-EOF
       #! /bin/bash
-      /000-datadisk && /001-zabbix && rm /000-datadisk && rm /001-zabbix && touch /tmp/success.log
+      /000-datadisk && /001-zabbix && echo StartConnectors=5 >> /etc/zabbix/zabbix_server.conf && systemctl restart zabbix-server && rm /000-datadisk && rm /001-zabbix && touch /tmp/success.log
     EOF
   }
   service_account = {
